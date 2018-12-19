@@ -1,34 +1,51 @@
+import javax.swing.*;
+import java.awt.*;
 
 public class Tile {
-	private int x;
-	private int y;
 	private int type;
 	private boolean masked;
-	
-	Tile(int x, int y){
-		location(x, y);
+	private boolean flagged;
+	int x, y, width, height;
+	ImageType image;
+
+	public Tile() {
+		type = 0;
+		masked = true;
+		image = ImageType.TILE;
 	}
-	
-	Tile(){
-		location(0,0);
+
+	public Image getImage() {
+	    java.net.URL imgURL = getClass().getClassLoader().getResource(image.getUrl());
+        ImageIcon icon = null;
+        if (imgURL != null) {
+            icon = new ImageIcon(imgURL);
+        } else {
+            System.err.println("Couldn't find file: " + image.getUrl());
+        }
+        return icon.getImage();
+    }
+
+	public int getType() {
+		return type;
 	}
-	
-	//setting location
-	public void location(int x, int y){
-		this.setX(x);
-		this.setY(y);
+
+	public boolean isFlagged() {
+		return flagged;
 	}
-	
-	
-	//getters and setters
-	public void setType(int type){this.type = type;}
-	public int getType(){return this.type;}
-	public int getX() {return x;}
-	public void setX(int x) {this.x = x;}
-	public int getY() {return y;}
-	public void setY(int y) {this.y = y;}
-	public boolean isMasked() {return masked;}
-	public void setMasked(boolean masked) {this.masked = masked;}
-	
-	
+
+	public boolean isMasked() {
+		return masked;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
+	public void setFlagged(boolean flagged) {
+		this.flagged = flagged;
+	}
+
+	public void setMasked(boolean masked) {
+		this.masked = masked;
+	}
 }
