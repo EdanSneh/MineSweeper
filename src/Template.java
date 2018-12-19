@@ -26,7 +26,7 @@ public class Template extends JFrame {
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
             setBackground(Color.LIGHT_GRAY);
-            Board board = new Board(20, 20, 2);
+            Board board = new Board(20, 20, 100);
             board.draw(g);
         }
     }

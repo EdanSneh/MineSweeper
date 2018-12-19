@@ -22,41 +22,43 @@ public class Board {
 
     private void placeBombs(int length, int width, int bombs) {
         for (int i = 0; i < bombs; i++) {
-            int randLength = (int) (Math.random() * length);;
+            int randLength = (int) (Math.random() * length);
             int randWidth = (int) (Math.random() * width);
             Tile thisTile = tiles[randLength][randWidth];
             if (thisTile.getType() != bombInt) {
                 thisTile.setType(bombInt);
                 if (randLength != 0) {
                     Tile tile = tiles[randLength - 1][randWidth];
-                    tile.setType(tile.getType() + 1);
-                } else if (randLength == length) {
-                    Tile tile = tiles[randLength + 1][randWidth];
-                    tile.setType(tile.getType() + 1);
+                    if (tile.getType() != bombInt) { tile.setType(tile.getType() + 1); }
                 }
-
+                if (randLength != length - 1) {
+                    Tile tile = tiles[randLength + 1][randWidth];
+                    if (tile.getType() != bombInt) { tile.setType(tile.getType() + 1); }
+                }
                 if (randWidth != 0) {
                     Tile tile = tiles[randLength][randWidth - 1];
-                    tile.setType(tile.getType() + 1);
-                } else if (randWidth == width) {
-                    Tile tile = tiles[randLength][randWidth + 1];
-                    tile.setType(tile.getType() + 1);
+                    if (tile.getType() != bombInt) { tile.setType(tile.getType() + 1); }
                 }
-
+                if (randWidth != width - 1) {
+                    Tile tile = tiles[randLength][randWidth + 1];
+                    if (tile.getType() != bombInt) { tile.setType(tile.getType() + 1); }
+                }
                 if (randLength != 0 && randWidth != 0) {
                     Tile tile = tiles[randLength - 1][randWidth - 1];
-                    tile.setType(tile.getType() + 1);
-                } else if (randLength != length && randWidth != width) {
+                    if (tile.getType() != bombInt) { tile.setType(tile.getType() + 1); }
+                }
+                if (randLength != length - 1 && randWidth != width - 1) {
                     Tile tile = tiles[randLength + 1][randWidth + 1];
-                    tile.setType(tile.getType() + 1);
+                    if (tile.getType() != bombInt) { tile.setType(tile.getType() + 1); }
                 }
 
-                if (randLength != 0 && randWidth != width) {
+                if (randLength != 0 && randWidth != width - 1) {
                     Tile tile = tiles[randLength - 1][randWidth + 1];
-                    tile.setType(tile.getType() + 1);
-                } else if (randLength != length && randWidth != 0) {
+                    if (tile.getType() != bombInt) { tile.setType(tile.getType() + 1); }
+                }
+                if (randLength != length - 1 && randWidth != 0) {
                     Tile tile = tiles[randLength + 1][randWidth - 1];
-                    tile.setType(tile.getType() + 1);
+                    if (tile.getType() != bombInt) { tile.setType(tile.getType() + 1); }
                 }
             } else {
                 i--;
@@ -100,7 +102,7 @@ public class Board {
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < width; j++) {
                 Image img = tiles[i][j].getImage();
-                g.drawImage(img, i, j, 200, 200, null);
+                g.drawImage(img, i * 40, j * 40, 40, 40, null);
             }
         }
     }

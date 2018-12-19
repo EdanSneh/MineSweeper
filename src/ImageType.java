@@ -1,4 +1,5 @@
 public enum ImageType {
+    ZERO("zero"),
     ONE("one"),
     TWO("two"),
     THREE("three"),
@@ -7,8 +8,8 @@ public enum ImageType {
     SIX("six"),
     SEVEN("seven"),
     EIGHT("eight"),
-    BOMB("bomb"),
     TILE("tile"),
+    BOMB("bomb"),
     FLAG("flag");
 
     private String url;

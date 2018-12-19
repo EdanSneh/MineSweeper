@@ -5,7 +5,6 @@ public class Tile {
 	private int type;
 	private boolean masked;
 	private boolean flagged;
-	int x, y, width, height;
 	ImageType image;
 
 	public Tile() {
@@ -15,6 +14,7 @@ public class Tile {
 	}
 
 	public Image getImage() {
+	    image = ImageType.values()[type];
 	    java.net.URL imgURL = getClass().getClassLoader().getResource(image.getUrl());
         ImageIcon icon = null;
         if (imgURL != null) {
@@ -38,7 +38,7 @@ public class Tile {
 	}
 
 	public void setType(int type) {
-		this.type = type;
+            this.type = type;
 	}
 
 	public void setFlagged(boolean flagged) {
