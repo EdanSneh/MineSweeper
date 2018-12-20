@@ -1,4 +1,3 @@
-import javax.swing.*;
 import java.awt.*;
 
 public class Tile {
@@ -14,15 +13,7 @@ public class Tile {
 	}
 
 	public Image getImage() {
-	    image = ImageType.values()[type];
-	    java.net.URL imgURL = getClass().getClassLoader().getResource(image.getUrl());
-        ImageIcon icon = null;
-        if (imgURL != null) {
-            icon = new ImageIcon(imgURL);
-        } else {
-            System.err.println("Couldn't find file: " + image.getUrl());
-        }
-        return icon.getImage();
+	    return image.getImage();
     }
 
 	public int getType() {
@@ -47,5 +38,8 @@ public class Tile {
 
 	public void setMasked(boolean masked) {
 		this.masked = masked;
+		if (!masked) {
+            image = ImageType.values()[type];
+        }
 	}
 }

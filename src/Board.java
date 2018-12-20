@@ -6,6 +6,7 @@ public class Board {
     private Tile[][] tiles;
     private int numMasked;
     private boolean isLose;
+    private int size;
 
 
     public Board(int length, int width, int bombs) {
@@ -17,7 +18,19 @@ public class Board {
         }
         placeBombs(length, width, bombs);
         numMasked = length * width - bombs;
+        size = 40;
+    }
 
+    public Board(int length, int width, int bombs, int size) {
+        tiles = new Tile[length][width];
+        for (int i = 0; i < length; i++) {
+            for (int j = 0; j < length; j++) {
+                tiles[i][j] = new Tile();
+            }
+        }
+        placeBombs(length, width, bombs);
+        numMasked = length * width - bombs;
+        this.size = size;
     }
 
     private void placeBombs(int length, int width, int bombs) {
@@ -67,12 +80,27 @@ public class Board {
     }
 
     public boolean checkSquare(int length, int width) {
-        Tile tile = tiles[length][width];
+        Tile tile;
+        try {
+            tile = tiles[length][width];
+        } catch (Exception e) {
+            return false;
+        }
         if (tile.isMasked() && !tile.isFlagged()) {
+            tile.setMasked(false);
             if (tile.getType() == bombInt) {
                 isLose = true;
             } else {
-                tile.setMasked(false);
+                if (tile.getType() == 0) {
+                    checkSquare(length + 1, width);
+                    checkSquare(length - 1, width);
+                    checkSquare(length, width + 1);
+                    checkSquare(length, width - 1);
+                    checkSquare(length + 1, width - 1);
+                    checkSquare(length - 1, width + 1);
+                    checkSquare(length + 1, width + 1);
+                    checkSquare(length - 1, width - 1);
+                }
                 numMasked--;
             }
             return true;
@@ -102,8 +130,16 @@ public class Board {
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < width; j++) {
                 Image img = tiles[i][j].getImage();
-                g.drawImage(img, i * 40, j * 40, 40, 40, null);
+                g.drawImage(img, i * size, j * size, size, size, null);
             }
         }
+    }
+
+    public int length() {
+        return tiles.length;
+    }
+
+    public int width() {
+        return tiles[0].length;
     }
 }

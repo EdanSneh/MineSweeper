@@ -1,3 +1,6 @@
+import javax.swing.*;
+import java.awt.*;
+
 public enum ImageType {
     ZERO("zero"),
     ONE("one"),
@@ -20,5 +23,16 @@ public enum ImageType {
 
     public String getUrl() {
         return url;
+    }
+
+    public Image getImage() {
+        java.net.URL imgURL = getClass().getClassLoader().getResource(getUrl());
+        ImageIcon icon = null;
+        if (imgURL != null) {
+            icon = new ImageIcon(imgURL);
+        } else {
+            System.err.println("Couldn't find file: " + getUrl());
+        }
+        return icon.getImage();
     }
 }
