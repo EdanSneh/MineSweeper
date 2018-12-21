@@ -35,11 +35,6 @@ public class Template extends JFrame {
         setVisible(true);
     }
 
-    public void paint(Graphics g) {
-        super.paint(g);
-        System.out.println(getSize());
-    }
-
     public void prompt(String Question) {
         JList list = new JList(new String[] {"Beginner 9x9 Mines: 10", "Intermediate 16x16 Mines: 40", "Expert 30x16 Mines: 99", "Custom (choose size below):"});
         JTextField lengthField = new JTextField();
