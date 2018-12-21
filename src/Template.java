@@ -15,8 +15,22 @@ public class Template extends JFrame {
     public Template() {
         canvas = new Canvas();
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        pack();
-        prompt();
+        prompt("Welcome to Minesweeper\n\n");
+        canvas.setPreferredSize(new Dimension(length * size, width * size));
+        JScrollPane scrollPane = new JScrollPane(canvas);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.getHorizontalScrollBar().setUnitIncrement(12);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(12);
+        Container cp = getContentPane();
+        cp.add(scrollPane);
+        setMinimumSize(new Dimension(size, size));
+        setMaximumSize(new Dimension(length * size + 20, width * size + 40));
+        if (getMaximumSize().height < canvasHeight || getMaximumSize().width < canvasWidth) {
+            setSize(getMaximumSize());
+        } else {
+            setSize(new Dimension(canvasWidth, canvasHeight));
+        }
         setTitle("Minesweeper");
         setVisible(true);
     }
