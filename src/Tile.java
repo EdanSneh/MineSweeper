@@ -34,6 +34,11 @@ public class Tile {
 
 	public void setFlagged(boolean flagged) {
 		this.flagged = flagged;
+		if(flagged) {
+		    image = ImageType.FLAG;
+        } else {
+            image = ImageType.TILE;
+        }
 	}
 
 	public void setMasked(boolean masked) {

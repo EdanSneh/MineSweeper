@@ -3,9 +3,9 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class Template extends JFrame {
-    private int canvasWidth = 800;
-    private int canvasHeight = 800;
-    public static final int size = 40;
+    public static final int size = 30;
+    private int canvasWidth = 16 * size + 4;
+    private int canvasHeight = 16 * size + 26;
     private Canvas canvas;
     private Board board;
     private int length;
@@ -14,11 +14,6 @@ public class Template extends JFrame {
 
     public Template() {
         canvas = new Canvas();
-        canvas.setPreferredSize(new Dimension(canvasWidth, canvasHeight));
-
-        Container cp = getContentPane();
-        cp.add(canvas);
-
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         pack();
         prompt();
@@ -26,21 +21,27 @@ public class Template extends JFrame {
         setVisible(true);
     }
 
-    public void prompt() {
-        JList list = new JList(new String[] {"Beginner 9x9 Mines: 10", "Intermediate 16x16 Mines: 40", "Expert 16x30 Mines: 99", "Custom (choose size below):"});
+    public void paint(Graphics g) {
+        super.paint(g);
+        System.out.println(getSize());
+    }
+
+    public void prompt(String Question) {
+        JList list = new JList(new String[] {"Beginner 9x9 Mines: 10", "Intermediate 16x16 Mines: 40", "Expert 30x16 Mines: 99", "Custom (choose size below):"});
         JTextField lengthField = new JTextField();
         JTextField widthField = new JTextField();
         JTextField bombField = new JTextField();
         Object[] message = {
+                Question,
                 list,
                 "Length:", lengthField,
                 "Width:", widthField,
                 "Number of mines:", bombField,
         };
 
-        int option = JOptionPane.showConfirmDialog(null, message, "Login", JOptionPane.OK_CANCEL_OPTION);
+        int option = JOptionPane.showConfirmDialog(null, message, "Set Up", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
-            if (list.isSelectedIndex(0) || list.isSelectionEmpty()) {
+            if (list.isSelectedIndex(0)) {
                 length = 9;
                 width = 9;
                 bomb = 10;
@@ -49,8 +50,8 @@ public class Template extends JFrame {
                 width = 16;
                 bomb = 40;
             } else if (list.isSelectedIndex(2)) {
-                length = 16;
-                width = 30;
+                length = 30;
+                width = 16;
                 bomb = 99;
             }
             else {
@@ -59,7 +60,20 @@ public class Template extends JFrame {
                     width = Integer.parseInt(widthField.getText());
                     bomb = Integer.parseInt(bombField.getText());
                 } catch (NumberFormatException e) {
-                    prompt();
+                    prompt("Please enter APPROPRIATE custom fields\n\n");
+                    return;
+                }
+                if (bomb < 1) {
+                    prompt("NOT ENOUGH BOMBS");
+                    return;
+                }
+                if (length > 120 || width > 120) {
+                    prompt("length and width too large (>120)");
+                    return;
+                }
+                if (length * width - bomb - 9 < 0) {
+                    prompt("TOO MANY BOMBS");
+                    return;
                 }
             }
         } else {
@@ -74,7 +88,6 @@ public class Template extends JFrame {
         public Canvas() {
             super();
             addMouseListener(this);
-
         }
 
         public void paintComponent(Graphics g) {
@@ -87,63 +100,49 @@ public class Template extends JFrame {
         public void mouseReleased(MouseEvent e) {
             int x = e.getX();
             int y = e.getY();
-            if (e.getButton() == 1) {
-                if (x < board.length() * size && y < board.width() * size && board.checkSquare(x / size, y / size)) {
-                    repaint();
-                    if (board.isLose()) {
-                        lose();
-                    } else if (board.isWin()) {
-                        win();
+            if (board.firstClick()) {
+                if (e.getButton() == 1) {
+                    if (x < board.length() * size && y < board.width() * size && board.checkSquare(x / size, y / size)) {
+                        repaint();
+                    }
+                } else if (e.getButton() == 3) {
+                    if (x < board.length() * size && y < board.width() * size && board.flag(x / size, y / size)) {
+                        repaint();
                     }
                 }
-            } else if (e.getButton() == 3) {
-                if (x < board.length() * size && y < board.width()) {
-                    repaint();
-                    board.flag(x / size, y / size);
-                }
+            } else {
+                board.startGame(x / size, y / size);
+                repaint();
+            }
+            if (board.isLose()) {
+                end("You Lose", "Failure");
+            } else if (board.isWin()) {
+                end("You Win", "Success");
             }
         }
 
-        private void lose() {
+        private void end(String msg, String title) {
             Object[] options = {
+                    "Change Difficulty",
                     "New Game",
-                    "Exit"
+                    "Quit"
             };
             int n = JOptionPane.showOptionDialog(this,
-                    "You Lose",
-                    "Faliure",
-                    JOptionPane.YES_NO_OPTION,
+                    msg,
+                    title,
+                    JOptionPane.YES_NO_CANCEL_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
                     null,
                     options,
                     options[1]);
-            if (n == 1) {
+            if (n == JOptionPane.CANCEL_OPTION) {
                 System.exit(0);
-            } else {
+            } else if (n == JOptionPane.NO_OPTION) {
                 board = new Board(length, width, bomb, size);
-                repaint();
-            }
-        }
-
-        public void win() {
-            Object[] options = {
-                    "New Game",
-                    "Exit"
-            };
-            int n = JOptionPane.showOptionDialog(this,
-                    "You Win!",
-                    "Sucess",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE,
-                    null,
-                    options,
-                    options[1]);
-            if (n == 1) {
-                System.exit(0);
             } else {
-                board = new Board(length, width, bomb, size);
-                repaint();
+                prompt("Choose a difficulty\n\n");
             }
+            repaint();
         }
 
         @Override
